@@ -4,7 +4,8 @@ import List from './List.js';
 import Header from './Header.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-sticky-header/styles.css';
-import './.env'
+import './.env';
+require('dotenv').config();
 
 const dotenv = require('dotenv');
 dotenv.config();
@@ -45,7 +46,7 @@ class App extends Component {
 
 
   componentDidMount = () =>{
-    axios.get('https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=' + process.env.API_KEY + '&location=38.0293,-78.4767&radius=100&type=restaurant')
+    axios.get('https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=' + process.env.REACT_APP_API_KEY + '&location=38.0293,-78.4767&radius=100&type=restaurant')
     .then((response) => {
       console.log(response);
       this.setState({
@@ -74,13 +75,12 @@ class App extends Component {
 
 
   render() {
-    console.log("API: " + process.env.API_KEY)
+    console.log("API: " + process.env.REACT_APP_API_KEY)
+    // console.log("API: " + process.env.NODE_ENV)
     return(
       <div className="bg-info">
         <Header />
-        <List 
-          restaurants={this.state.restaurants}
-        />
+        <List restaurants={this.state.restaurants}/>
       </div>
     );
   }

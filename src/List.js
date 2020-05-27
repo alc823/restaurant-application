@@ -4,6 +4,12 @@ import Card from 'react-bootstrap/Card';
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import { isEmpty } from "lodash";
+import './.env';
+require('dotenv').config();
+
+const dotenv = require('dotenv');
+dotenv.config();
+
 const axios = require('axios');
 var host = process.env.HOST || '0.0.0.0';
 // Listen on a specific port via the PORT environment variable
@@ -38,7 +44,7 @@ function list (props){
             <Container style={{ width: '70vw', height: '80vh', backgroundColor: "#292b2c", marginTop: 50, borderRadius: '10px', verticalAlign:"center", display:"flex", flexWrap: "wrap", justifyContent:"center" }}>
             {props.restaurants.map(restaurant => {
                 var stem;
-                    axios.get('https://maps.googleapis.com/maps/api/place/details/json?key=AIzaSyBQRbOl8Z5HnrY12zURP84C6Tdwsoy-HUI&place_id=' + restaurant.place_id)
+                    axios.get('https://maps.googleapis.com/maps/api/place/details/json?key=' + process.env.REACT_APP_API_KEY + '&place_id=' + restaurant.place_id)
                     .then((response) => {
                      stem = response
                     })
