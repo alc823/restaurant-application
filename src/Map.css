@@ -1,0 +1,9 @@
+.leaflet-container {
+  width: 100% !important;
+  height: 70vh !important;
+}
+
+.map_component {
+    margin-left: 15vw;
+    margin-right: 15vw;
+}

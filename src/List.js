@@ -4,76 +4,100 @@ import Card from 'react-bootstrap/Card';
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import { isEmpty } from "lodash";
-import './.env';
-require('dotenv').config();
 
-const dotenv = require('dotenv');
-dotenv.config();
-
-const axios = require('axios');
-var host = process.env.HOST || '0.0.0.0';
-// Listen on a specific port via the PORT environment variable
-var port = process.env.PORT || 8080;
-var cors_proxy = require('cors-anywhere');
-
-(function() {
-  var cors_api_host = 'cors-anywhere.herokuapp.com';
-  var cors_api_url = 'https://' + cors_api_host + '/';
-  var slice = [].slice;
-  var origin = window.location.protocol + '//' + window.location.host;
-  var open = XMLHttpRequest.prototype.open;
-  XMLHttpRequest.prototype.open = function() {
-      var args = slice.call(arguments);
-      var targetOrigin = /^https?:\/\/([^\/]+)/i.exec(args[1]);
-      if (targetOrigin && targetOrigin[0].toLowerCase() !== origin &&
-          targetOrigin[1] !== cors_api_host) {
-          args[1] = cors_api_url + args[1];
-      }
-      return open.apply(this, args);
-  };
-})();
-//Component to manipulate and display restaurants and bars
 function list (props){
-    //console.log("restaurants: " + props.restaurants)
-    // console.log("restaurant empty? " + isEmpty(props.restaurants));
+
+    let display_list = props.restaurants;
+    if (props.searchOn) {
+        display_list = props.results;
+    }
+
     return (
         //map function that gives style to each restaurant and bar
-        <div className="list" style={{ display:"flex", justifyContent:"center", marginTop: 50 }}>
-            
-            {/* Restaurants: {props.restaurants.data.results[0].geometry.name} */}
-            <Container style={{ width: '70vw', height: '80vh', backgroundColor: "#292b2c", marginTop: 50, borderRadius: '10px', verticalAlign:"center", display:"flex", flexWrap: "wrap", justifyContent:"center" }}>
-            {props.restaurants.map(restaurant => {
-                var stem;
-                    axios.get('https://maps.googleapis.com/maps/api/place/details/json?key=' + process.env.REACT_APP_API_KEY + '&place_id=' + restaurant.place_id)
-                    .then((response) => {
-                     stem = response
-                    })
-                    .catch((e) => {
-                      console.log(e.response.data);
-                    })
-                // console.log("restaurant")
-                return (
-                    <Card style={{ width: '60vw', height: '50vh', marginTop: "5vh", align: "center"}}>
-                    <Card.Body>
-                        <Card.Title>{stem.name}</Card.Title>
-                        <Card.Text>
-                        {/* Price: $$$ */}
-                        title: {restaurant.name}<br/>
-                        expense: {restaurant.price}<br/>
-                        rating: {restaurant.rating}
+        <div className="list" style={{ display:"flex", justifyContent:"center", flexWrap: "wrap" }}>
+            <Container className="list_container" style={{  
+                display:"flex", 
+                flexWrap: "wrap", 
+                justifyContent:"center",
+                }}>
+            <div className="cards_list">
+            {display_list.map(restaurant => {
+                let expense = restaurant.price_level;               
+                // console.log(expense);
+                /*
+                    
+                    bool isRestaurant, isBar, sortedByPrice, sortedByDistance;
+                    //PLACE in App.js
+                    function sortByPrice (restaurants) {
+                        sorted = []
+                        start = 0
+                        end = restaurants.length
                         
-                        </Card.Text>
-                        {/* <Card.Text>
-                        Rating: ***
-                        </Card.Text> */}
-                        {/*<Card.Img variant="top" src="holder.js/100px180?text=Image cap" /> */}
-                    </Card.Body>
+                        if (restaurants.length > 1){
+                            mid = (start + end) / 2
+                            L = restaurants[mid]
+                            R = restaurants[(end-mid) + 1]
+
+                            sortByPrice(L)
+                            sortByPrice(R)
+                        }
+
+                        while i < len(L) and j < len(R): 
+                if L[i] < R[j]: 
+                    arr[k] = L[i] 
+                    i+=1
+                else: 
+                    arr[k] = R[j] 
+                    j+=1
+                k+=1
+            
+            # Checking if any element was left 
+            while i < len(L): 
+                arr[k] = L[i] 
+                i+=1
+                k+=1
+            
+            while j < len(R): 
+                arr[k] = R[j] 
+                j+=1
+                k+=1
+
+                        for (restaurant: restaurants) {
+                            
+                        }
+                    }
+    
+            i = j = k = 0
+            
+            # Copy data to temp arrays L[] and R[] 
+            
+                    
+                        function sortByDistance(restaurants){
+
+                        }
+                        const filterByRestaurant = restaurants.filter(eatery => eatery.isRestaurant)
+                        const filterByBar = restaurants.filter(eatery => eatery.isBar)
+                        const filterByPrice = 
+
+
+                */
+                
+                return (
+                    <Card className="card" style={{ align: "center"}}>
+                        <Card.Body>
+                            {<Card.Title style={{fontWeight: 'bold'}}>{restaurant.name}</Card.Title>}
+                            <Card.Text>
+                            <div className="label">Expense:</div>{props.expenseTo$(expense)}<br/>
+                            <div className="label">Rating:</div>{restaurant.rating}<br/>
+                            <div className="label">Address:</div>{restaurant.formatted_address}
+                            </Card.Text>
+                        </Card.Body>
                     </Card>
                 );
             })}
+            </div>
             
             </Container>
-            {/* {props.restaurants} */}
         </div>
     );
     

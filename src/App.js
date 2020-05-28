@@ -4,6 +4,8 @@ import List from './List.js';
 import Header from './Header.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-sticky-header/styles.css';
+import Map from './Map.js';
+import SearchBar from './SearchBar'
 import './.env';
 require('dotenv').config();
 
@@ -33,54 +35,174 @@ var cors_proxy = require('cors-anywhere');
   };
 })();
 
+const priceAmt = [
+  '$', '$$', '$$$', '$$$$', '$$$$$'
+] 
+
 class App extends Component {
   
   constructor(){
     super()
     this.state = {
     //list of restaurant and bar objects
-      restaurants: []
+      restaurants: [],
+      restaurant: [],
+      results: [],
+      searchOn: false,
     }
   
   }
 
-
-  componentDidMount = () =>{
-    axios.get('https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=' + process.env.REACT_APP_API_KEY + '&location=38.0293,-78.4767&radius=100&type=restaurant')
-    .then((response) => {
-      console.log(response);
+  searchQuery = (query) => {
+  //   axios.get('https://maps.googleapis.com/maps/api/place/textsearch/json?query=' + query + '&location=38.0293,-78.4767&radius=2000&type=restaurant&key=' + process.env.REACT_APP_API_KEY)
+  //   .then((response) => {
+  //     this.setState({
+  //       restaurants: response.data.results
+  //     })
+  //     console.log(response);
+  //   })
+  //   .catch((e) => {
+  //     console.log("ERROR")
+  //     console.log(e.response.data);
+  //   })
+  //   .then(() => {
+  // });
+    if (query === '') {
       this.setState({
-        restaurants: response.data.results
+        searchOn: false,
       })
-    })
-    .catch((e) => {
-      console.log(e.response.data);
-    })
-    .then(() => {
-      // always execute
-      
-    })
+    } else {
+      // console.log("query: " + query)
+      const search_results = this.state.restaurants.filter(restaurant => restaurant.name === query);
+      console.log("search_results length: " + search_results.length);
+      this.setState({
+        searchOn: true,
+        results: search_results,
+      });
+    }
     
   }
 
-  
+  componentDidMount = () =>{
+    axios.get('https://maps.googleapis.com/maps/api/place/textsearch/json?query=restaurant&location=38.0293,-78.4767&radius=2000&type=restaurant&key=' + process.env.REACT_APP_API_KEY)
+    .then((response) => {
+      this.setState({
+        restaurants: response.data.results
+      })
+      // console.log("Data: ");
+      // console.log(response);
+    })
+    .catch((e) => {
+      console.log("ERROR")
+      console.log(e.response.data);
+    })
+    .then(() => {
+  });
+}
 
   handleRestaurantData(key)  {
-    // restaurant
     const restaurants = [...this.state.restaurants, key];
     this.setState({
       
     });
   }
 
+  expenseTo$ = (price_level) =>{
+      if (price_level === undefined) {
+        return 'No data';
+      }
+      return priceAmt[price_level];
+  }
 
+  
+
+/*
+                    
+                    bool isRestaurant, isBar, sortedByPrice, sortedByDistance;
+                    
+                    function sortByPrice (restaurants) {
+                        sorted = []
+                        start = 0
+                        end = restaurants.length
+                        
+                        if (restaurants.length > 1){
+                            mid = (start + end) / 2
+                            L = restaurants[mid]
+                            R = restaurants.slice(mid, R) //
+
+                            sortByPrice(L)
+                            sortByPrice(R)
+                        }
+
+                        let i,j,k = 0
+                        
+                        while (i < L.length and j < R.length{
+                            if (L[i] < R[j]) {
+                              sorted[k] = L[i] 
+                              i++
+                            } 
+                            else {
+                              sorted[k] = R[j] 
+                              j++ 
+                            }
+                              k++
+                          } 
+                            
+                        } 
+            
+                        while (i < L.length) {
+                            sorted[k] = L[i]; 
+                            i++;
+                            k++;
+                        } 
+                            
+                        
+                        while (j < R,length) {
+                            sorted[k] = R[j]; 
+                            j++;
+                            k++;
+                        }
+                            
+
+                        for (restaurant: restaurants) {
+                            
+                        }
+                    }
+    
+            
+            
+            # Copy data to temp arrays L[] and R[] 
+            
+                    
+                        function sortByDistance(restaurants){
+
+                        }
+                        const filterByRestaurant = restaurants.filter(eatery => eatery.isRestaurant)
+                        const filterByBar = restaurants.filter(eatery => eatery.isBar)
+                        const filterByPrice = 
+
+
+                */
+                
   render() {
-    console.log("API: " + process.env.REACT_APP_API_KEY)
-    // console.log("API: " + process.env.NODE_ENV)
     return(
       <div className="bg-info">
-        <Header />
-        <List restaurants={this.state.restaurants}/>
+        <Header /><br/>
+        <Map 
+          restaurants={this.state.restaurants}
+          results={this.state.results}
+          searchOn={this.state.searchOn}
+        /><br/>
+        <SearchBar 
+          searchQuery={this.searchQuery}
+          results={this.state.results}
+        />
+        <List 
+          restaurants={this.state.restaurants} 
+          expenseTo$={this.expenseTo$}
+          results={this.state.results}
+          searchOn={this.state.searchOn}
+        />
       </div>
     );
   }

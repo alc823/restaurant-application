@@ -4,8 +4,8 @@ import './Header.css';
 
 function header (props){
     return(
-        <div>
-          <StickyHeader
+        <div className="header">
+          {/* <StickyHeader
             header={
               <div className="Header_root" style={{backgroundColor:"lightblue"}}>
                 <h1 className="Header_title" style={{ display: "flex", justifyContent: "center" }}>Restaurant App</h1>
@@ -14,7 +14,8 @@ function header (props){
             className="sticky"
             
           >
-          </StickyHeader>
+          </StickyHeader> */}
+          Restaurant App
         </div>
     );
 }

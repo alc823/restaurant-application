@@ -1,0 +1,10 @@
+@import url(https://fonts.googleapis.com/css?family=EB+Garamond|Cardo:400italic);
+@import url('https://fonts.googleapis.com/css?family=Dancing+Script|Rokkitt|Shadows+Into+Light|Tangerine&display=swap');
+
+.header {
+    background-color: lightblue;
+    font-family: 'Rokkitt', serif;
+    padding: 12px;
+    font-size: 48px;
+    text-align: center;
+}

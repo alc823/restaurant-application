@@ -1,0 +1,29 @@
+.list{
+    background-color: #292b2c;
+    /* width: 70vw; */
+    margin-left: 15vw;
+    margin-right: 15vw;
+    margin-top: 1vh;
+    border-radius: 10px;
+    justify-content: center;
+    vertical-align: center;
+}
+
+.list_container {
+    justify-content: center;
+}
+
+.cards_list {
+    margin: 20px;
+}
+
+.card {
+    width: 60vw;
+    margin: 10px;
+}
+
+.label {
+    display: inline;
+    text-decoration: underline;
+    margin-right: 5px;
+}
