@@ -46,7 +46,8 @@ class App extends Component {
     this.state = {
     //list of restaurant and bar objects
       restaurants: [],
-      restaurant: [],
+      restaurant: [
+      ],
       results: [],
       searchOn: false,
     }
@@ -72,9 +73,11 @@ class App extends Component {
         searchOn: false,
       })
     } else {
-      // console.log("query: " + query)
-      const search_results = this.state.restaurants.filter(restaurant => restaurant.name === query);
-      console.log("search_results length: " + search_results.length);
+      // console.log(this.state.restaurants[0].types.indexOf('restaurant') === -1);
+      const search_results = this.state.restaurants.filter(restaurant => 
+        restaurant.name.toLowerCase().includes(query.toLowerCase()) || restaurant.types.indexOf(query.toLowerCase()) !== -1
+        );
+      // console.log("search_results length: " + search_results.length);
       this.setState({
         searchOn: true,
         results: search_results,
@@ -84,13 +87,13 @@ class App extends Component {
   }
 
   componentDidMount = () =>{
-    axios.get('https://maps.googleapis.com/maps/api/place/textsearch/json?query=restaurant&location=38.0293,-78.4767&radius=2000&type=restaurant&key=' + process.env.REACT_APP_API_KEY)
+    axios.get('https://maps.googleapis.com/maps/api/place/textsearch/json?query=&location=38.0293,-78.4767&radius=2000&type=restaurant|bar&key=' + process.env.REACT_APP_API_KEY)
     .then((response) => {
       this.setState({
         restaurants: response.data.results
       })
       // console.log("Data: ");
-      // console.log(response);
+      console.log(response);
     })
     .catch((e) => {
       console.log("ERROR")
@@ -114,75 +117,30 @@ class App extends Component {
       return priceAmt[price_level];
   }
 
-  
-
-/*
-                    
-                    bool isRestaurant, isBar, sortedByPrice, sortedByDistance;
-                    
-                    function sortByPrice (restaurants) {
-                        sorted = []
-                        start = 0
-                        end = restaurants.length
-                        
-                        if (restaurants.length > 1){
-                            mid = (start + end) / 2
-                            L = restaurants[mid]
-                            R = restaurants.slice(mid, R) //
-
-                            sortByPrice(L)
-                            sortByPrice(R)
-                        }
-
-                        let i,j,k = 0
-                        
-                        while (i < L.length and j < R.length{
-                            if (L[i] < R[j]) {
-                              sorted[k] = L[i] 
-                              i++
-                            } 
-                            else {
-                              sorted[k] = R[j] 
-                              j++ 
-                            }
-                              k++
-                          } 
-                            
-                        } 
-            
-                        while (i < L.length) {
-                            sorted[k] = L[i]; 
-                            i++;
-                            k++;
-                        } 
-                            
-                        
-                        while (j < R,length) {
-                            sorted[k] = R[j]; 
-                            j++;
-                            k++;
-                        }
-                            
-
-                        for (restaurant: restaurants) {
-                            
-                        }
-                    }
-    
-            
-            
-            # Copy data to temp arrays L[] and R[] 
-            
-                    
-                        function sortByDistance(restaurants){
-
-                        }
-                        const filterByRestaurant = restaurants.filter(eatery => eatery.isRestaurant)
-                        const filterByBar = restaurants.filter(eatery => eatery.isBar)
-                        const filterByPrice = 
+  filterByPrice = (e) => {
+      return this.state.restaurants.filter(eatery => e.target.value >= eatery.price_level && e.target.value <= eatery.price_level) 
+      // console.log("filterByPrice");
+      // console.log(e.target.value);
+      // if (this.state.searchOn) {
+      //   const filtered = this.state.results.filter(eatery => e.target.value >= eatery.price_level && e.target.value <= eatery.price_level)
+      //   this.setState({
+      //     results: filtered
+      //   })
+      // } else {
+      //   const filtered = this.state.restaurants.filter(eatery => e.target.value >= eatery.price_level && e.target.value <= eatery.price_level)
+      //   this.setState({
+      //     results: filtered
+      //   })
+      // }
+      
+  }
 
 
-                */
+  filterByType = (e) => {
+    return this.state.restaurants.filter(eatery => (e.target.value >= eatery.types && e.target.value <= eatery.types))
+  }
+
+
                 
   render() {
     return(
@@ -196,6 +154,8 @@ class App extends Component {
         <SearchBar 
           searchQuery={this.searchQuery}
           results={this.state.results}
+          filterByPrice={this.filterByPrice}
+          filterByType={this.filterByType}
         />
         <List 
           restaurants={this.state.restaurants} 
